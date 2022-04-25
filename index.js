@@ -18,14 +18,31 @@ app.post("/wsdata",async(req,res) => {
         
         console.log(`${tmp}`);
         const newWsData = await pool.query(`INSERT INTO dht (temperature,humidity) VALUES ('${tmp}','${hum}')`);
-        res.statusCode(200);
         res.send("OK");
 
         console.log("success");
     } catch (err) {
         console.error(err.message);
     }
-})
+});
+
+
+app.get("/dht", async(req,res)=>{
+
+    try{
+        const record = await pool.query(`SELECT daytime, temperature, humidity
+        FROM dht
+        ORDER BY daytime DESC
+        LIMIT 1`);
+
+        res.json(record.rows[0]);
+
+    }catch(err){
+        console.err(err.message);
+    }
+
+
+});
 
 
 
