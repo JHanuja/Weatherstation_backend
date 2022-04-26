@@ -13,8 +13,10 @@ app.listen(5000, () => console.log("Listening on port 5000"));
 
 app.post("/wsdata",async(req,res) => {
     try {
-        let tmp = req.query.temperature;
-        let hum = req.query.humidity;
+        let tmp = req.body.temperature;
+        let hum = req.body.humidity;
+
+        console.log(req.body);
         
         console.log(`${tmp}`);
         const newWsData = await pool.query(`INSERT INTO dht (temperature,humidity) VALUES ('${tmp}','${hum}')`);
