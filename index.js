@@ -64,7 +64,7 @@ app.get("/dht", async(req,res)=>{
         let airquality = singleValues.rows[0].airquality;
         let airpressure = singleValues.rows[0].airpressure;
 
-        const temperatureValues = await pool.query(`Select Date(daytime), Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
+        const temperatureValues = await pool.query(`Select Date(daytime) As date, Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
                                                     From (Select * From dht 
                                                     Where  Date(daytime) <= now()::DATE AND Date(daytime) > (now()::DATE -8)) as Week Group By Date(daytime);
 
@@ -77,12 +77,26 @@ app.get("/dht", async(req,res)=>{
         let avgsoilhum = [];
 
         for (i= 0; i < temperatureValues.rowCount; i ++){
-            mintemp[i] = temperatureValues.rows[i].mintemp;
-            maxtemp[i] = temperatureValues.rows[i].maxtemp;
-            avgtemp[i] = temperatureValues.rows[i].avgtemp;
-            avghum[i] = temperatureValues.rows[i].avghum;
-            avgsoilhum[i] = temperatureValues.rows[i].avgsoilhum;
-
+            mintemp[i] = {
+                "date" : temperatureValues.rows[i].date,
+                "temperature" : temperatureValues.rows[i].mintemp   
+            };
+            maxtemp[i] = {
+                "date" : temperatureValues.rows[i].date,
+                "temperature" : temperatureValues.rows[i].maxtemp   
+            };
+            avgtemp[i] = {
+                "date" : temperatureValues.rows[i].date,
+                "temperature" : temperatureValues.rows[i].avgtemp   
+            }
+            avghum[i] = {
+                "date" : temperatureValues.rows[i].date,
+                "temperature" : temperatureValues.rows[i].avghum   
+            }
+            avgsoilhum[i] = {
+                "date" : temperatureValues.rows[i].date,
+                "temperature" : temperatureValues.rows[i].avgsoilhum   
+            }
         }
         console.log(temperatureValues.rows[0].maxtemp);
 
@@ -94,7 +108,7 @@ app.get("/dht", async(req,res)=>{
         let sunrise = sun.rows[0].sunrise;
         let sunset = sun.rows[0].sunset; 
         
-        const air = await pool.query(`Select Date(daytime) As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= now()- interval '7 hours';`);
+        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= now()- interval '7 hours';`);
 
         let airpressurehistory = [];
         let airqualityhistory = [];
