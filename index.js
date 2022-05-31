@@ -78,24 +78,24 @@ app.get("/dht", async(req,res)=>{
 
         for (i= 0; i < temperatureValues.rowCount; i ++){
             mintemp[i] = {
-                "date" : temperatureValues.rows[i].date,
-                "temperature" : temperatureValues.rows[i].mintemp   
+                date : temperatureValues.rows[i].date,
+                temperature : temperatureValues.rows[i].mintemp   
             };
             maxtemp[i] = {
-                "date" : temperatureValues.rows[i].date,
-                "temperature" : temperatureValues.rows[i].maxtemp   
+                date : temperatureValues.rows[i].date,
+                temperature : temperatureValues.rows[i].maxtemp   
             };
             avgtemp[i] = {
-                "date" : temperatureValues.rows[i].date,
-                "temperature" : temperatureValues.rows[i].avgtemp   
+                date : temperatureValues.rows[i].date,
+                temperature : temperatureValues.rows[i].avgtemp   
             }
             avghum[i] = {
-                "date" : temperatureValues.rows[i].date,
-                "temperature" : temperatureValues.rows[i].avghum   
+                date : temperatureValues.rows[i].date,
+                temperature : temperatureValues.rows[i].avghum   
             }
             avgsoilhum[i] = {
-                "date" : temperatureValues.rows[i].date,
-                "temperature" : temperatureValues.rows[i].avgsoilhum   
+                date : temperatureValues.rows[i].date,
+                temperature : temperatureValues.rows[i].avgsoilhum   
             }
         }
         console.log(temperatureValues.rows[0].maxtemp);
@@ -119,13 +119,13 @@ app.get("/dht", async(req,res)=>{
             let airq = air.rows[i].airq;
 
             let airpjs = {
-                "time": time,
-                "airp": airp
+                time: time,
+                airp: airp
             }
 
             let airqjs = {
-                "time": time,
-                "airq": airq
+                time: time,
+                airq: airq
             }
 
             airpressurehistory[i] = airpjs;
@@ -133,20 +133,20 @@ app.get("/dht", async(req,res)=>{
         }
 
         res.json({
-            "daytime" : daytime,
-            "temperature" : temperature,
-            "humidity": humidity,
-            "airquality": airquality,
-            "airpressure": airpressure,
-            "maxtemp": maxtemp,
-            "mintemp": mintemp,
-            "avgtemp": avgtemp,
-            "avghum": avghum,
-            "avgsoilhum": avgsoilhum,
-            "sunrise": sunrise,
-            "sunset": sunset,
-            "airpressurehistory": airpressurehistory,
-            "airqualityhistory":airqualityhistory
+            daytime : daytime,
+            temperature : temperature,
+            humidity: humidity,
+            airquality: airquality,
+            airpressure: airpressure,
+            maxtemp: maxtemp,
+            mintemp: mintemp,
+            avgtemp: avgtemp,
+            avghum: avghum,
+            avgsoilhum: avgsoilhum,
+            sunrise: sunrise,
+            sunset: sunset,
+            airpressurehistory: airpressurehistory,
+            airqualityhistory:airqualityhistory
         });
 
     }catch(err){
