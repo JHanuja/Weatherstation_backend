@@ -79,23 +79,23 @@ app.get("/dht", async(req,res)=>{
         for (i= 0; i < temperatureValues.rowCount; i ++){
             mintemp[i] = {
                 date : temperatureValues.rows[i].date,
-                temperature : temperatureValues.rows[i].mintemp   
+                value : temperatureValues.rows[i].mintemp   
             };
             maxtemp[i] = {
                 date : temperatureValues.rows[i].date,
-                temperature : temperatureValues.rows[i].maxtemp   
+                value : temperatureValues.rows[i].maxtemp   
             };
             avgtemp[i] = {
                 date : temperatureValues.rows[i].date,
-                temperature : temperatureValues.rows[i].avgtemp   
+                value : temperatureValues.rows[i].avgtemp   
             }
             avghum[i] = {
                 date : temperatureValues.rows[i].date,
-                temperature : temperatureValues.rows[i].avghum   
+                value : temperatureValues.rows[i].avghum   
             }
             avgsoilhum[i] = {
                 date : temperatureValues.rows[i].date,
-                temperature : temperatureValues.rows[i].avgsoilhum   
+                value : temperatureValues.rows[i].avgsoilhum   
             }
         }
         console.log(temperatureValues.rows[0].maxtemp);
@@ -120,12 +120,12 @@ app.get("/dht", async(req,res)=>{
 
             let airpjs = {
                 time: time,
-                airp: airp
+                value: airp
             }
 
             let airqjs = {
                 time: time,
-                airq: airq
+                value: airq
             }
 
             airpressurehistory[i] = airpjs;
