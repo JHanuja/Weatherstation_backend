@@ -67,7 +67,13 @@ app.get("/dht", async(req,res)=>{
 
         const temperatureValues = await pool.query(`Select Date(daytime) As date, Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
                                                     From (Select * From dht 
-                                                    Where  Date(daytime) <= ${daytime} AND Date(daytime) > (${daytime} -8)) as Week Group By Date(daytime);
+                                                    Where  Date(daytime) <= SELECT daytime as lastdate
+                                                    FROM dht
+                                                    ORDER BY daytime DESC
+                                                    LIMIT 1 AND Date(daytime) > (SELECT daytime as lastdate
+                                                        FROM dht
+                                                        ORDER BY daytime DESC
+                                                        LIMIT 1 -8)) as Week Group By Date(daytime);
 
         `);
 
@@ -103,13 +109,19 @@ app.get("/dht", async(req,res)=>{
 
         const sun = await pool.query(   `Select Min(daytime) As sunrise,Max(daytime) As sunset From (Select * 
                                         From dht 
-                                        Where  Date(daytime) = (${daytime} - interval '1 day')::DATE) as Yesterday Group By brightness Having brightness > 0;
+                                        Where  Date(daytime) = (SELECT daytime as lastdate
+                                            FROM dht
+                                            ORDER BY daytime DESC
+                                            LIMIT 1 - interval '1 day')::DATE) as Yesterday Group By brightness Having brightness > 0;
                                     `);
 
         let sunrise = sun.rows.length > 0 ? sun.rows[0].sunrise : 'undefined';
         let sunset = sun.rows.length > 0 ? sun.rows[0].sunset : 'undefined'; 
         
-        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= ${daytime} - interval '7 hours';`);
+        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= SELECT daytime as lastdate
+        FROM dht
+        ORDER BY daytime DESC
+        LIMIT 1 - interval '7 hours';`);
 
         let airpressurehistory = [];
         let airqualityhistory = [];
