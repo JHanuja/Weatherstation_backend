@@ -103,7 +103,7 @@ app.get("/dht", async(req,res)=>{
 
         const sun = await pool.query(   `Select Min(daytime) As sunrise,Max(daytime) As sunset From (Select * 
                                         From dht 
-                                        Where  Date(daytime) = now()::DATE) as Yesterday Group By brightness Having brightness > 0;
+                                        Where  Date(daytime) = (now() - interval '1 day')::DATE) as Yesterday Group By brightness Having brightness > 0;
                                     `);
 
         let sunrise = sun.rows.length > 0 ? sun.rows[0].sunrise : 'undefined';
