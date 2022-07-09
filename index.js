@@ -67,7 +67,7 @@ app.get("/dht", async(req,res)=>{
 
         const temperatureValues = await pool.query(`Select Date(daytime) As date, Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
                                                     From (Select * From dht 
-                                                    Where  Date(daytime) <= now()::DATE AND Date(daytime) > (now()::DATE -8)) as Week Group By Date(daytime);
+                                                    Where  Date(daytime) <= Date(daytime)::DATE AND Date(daytime) > (Date(daytime)::DATE -8)) as Week Group By Date(daytime);
 
         `);
 
@@ -103,13 +103,13 @@ app.get("/dht", async(req,res)=>{
 
         const sun = await pool.query(   `Select Min(daytime) As sunrise,Max(daytime) As sunset From (Select * 
                                         From dht 
-                                        Where  Date(daytime) = (now() - interval '1 day')::DATE) as Yesterday Group By brightness Having brightness > 0;
+                                        Where  Date(daytime) = (Date(daytime) - interval '1 day')::DATE) as Yesterday Group By brightness Having brightness > 0;
                                     `);
 
         let sunrise = sun.rows.length > 0 ? sun.rows[0].sunrise : 'undefined';
         let sunset = sun.rows.length > 0 ? sun.rows[0].sunset : 'undefined'; 
         
-        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= now()- interval '7 hours';`);
+        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= Date(daytime) - interval '7 hours';`);
 
         let airpressurehistory = [];
         let airqualityhistory = [];
