@@ -58,11 +58,12 @@ app.get("/dht", async(req,res)=>{
         ORDER BY daytime DESC
         LIMIT 1`);
 
-        let temperature = singleValues.rows[0].temperature;
-        let daytime = singleValues.rows[0].daytime;
-        let humidity = singleValues.rows[0].humidity;
-        let airquality = singleValues.rows[0].airquality;
-        let airpressure = singleValues.rows[0].airpressure;
+        let temperature = singleValues.rows.length > 0 ? singleValues.rows[0].temperature : 'undefined'; 
+        let daytime = singleValues.rows.length > 0 ? singleValues.rows[0].daytime : 'undefined';
+        let humidity = singleValues.rows.length > 0 ? singleValues.rows[0].humidity : 'undefined';
+        let airquality = singleValues.rows.length > 0 ? singleValues.rows[0].airquality : 'undefined';
+        let airpressure = singleValues.rows.length > 0 ? singleValues.rows[0].airpressure : 'undefined';
+        let soilhumidity = singleValues.rows.length > 0 ? singleValues.rows[0].soilhumidity : 'undefined';
 
         const temperatureValues = await pool.query(`Select Date(daytime) As date, Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
                                                     From (Select * From dht 
@@ -138,6 +139,7 @@ app.get("/dht", async(req,res)=>{
             humidity: humidity,
             airquality: airquality,
             airpressure: airpressure,
+            soilhumidity: soilhumidity,
             maxtemp: maxtemp,
             mintemp: mintemp,
             avgtemp: avgtemp,
