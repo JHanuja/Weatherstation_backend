@@ -106,8 +106,8 @@ app.get("/dht", async(req,res)=>{
                                         Where  Date(daytime) = now()::DATE) as Yesterday Group By brightness Having brightness > 0;
                                     `);
 
-        let sunrise = sun.rows[0].sunrise;
-        let sunset = sun.rows[0].sunset; 
+        let sunrise = sun.rows.length > 0 ? sun.rows[0].sunrise : 'undefined';
+        let sunset = sun.rows.length > 0 ? sun.rows[0].sunset : 'undefined'; 
         
         const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= now()- interval '7 hours';`);
 
