@@ -66,8 +66,7 @@ app.get("/dht", async(req,res)=>{
         let soilhumidity = singleValues.rows.length > 0 ? singleValues.rows[0].soilhumidity : 'undefined';
 
         const temperatureValues = await pool.query(`Select Date(daytime) As date, Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
-                                                    From (Select * From dht 
-                                                    Where  Date(daytime) <= ${daytime}::Date AND Date(daytime) > (${daytime}::Date -8)) as Week Group By Date(daytime);
+                                                    From (Select * From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - 8)) As Week Group By Date(daytime);
 
         `);
 
@@ -102,14 +101,14 @@ app.get("/dht", async(req,res)=>{
         console.log(temperatureValues.rows[0].maxtemp);
 
         const sun = await pool.query(   `Select Min(daytime) As sunrise,Max(daytime) As sunset From (Select * 
-                                        From dht 
-                                        Where  Date(daytime) = (${daytime}::DATE - interval '1 day')::DATE) as Yesterday Group By brightness Having brightness > 0;
+            From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - interval '1 day')) As Yestary Group By brightness Having brightness > 0;
                                     `);
 
         let sunrise = sun.rows.length > 0 ? sun.rows[0].sunrise : 'undefined';
         let sunset = sun.rows.length > 0 ? sun.rows[0].sunset : 'undefined'; 
         
-        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From dht WHERE  daytime >= ${daytime}::DATE - interval '7 hours';`);
+        const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From (Select * 
+            From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - interval '7 hours')) As LastSevenHours;`);
 
         let airpressurehistory = [];
         let airqualityhistory = [];
