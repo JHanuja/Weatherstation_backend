@@ -53,7 +53,7 @@ sunrise -1 weg
 app.get("/dht", async(req,res)=>{
 
     try{
-        const singleValues = await pool.query(`SELECT daytime, temperature, humidity,airquality,airpressure
+        const singleValues = await pool.query(`SELECT daytime, temperature, humidity,airquality,airpressure, soilhumidity
         FROM dht
         ORDER BY daytime DESC
         LIMIT 1`);
