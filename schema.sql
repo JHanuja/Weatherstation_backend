@@ -1,5 +1,7 @@
 Drop table dht;
 
+CREATE DATABASE weather_data;
+
 
 CREATE TABLE dht(
     dht_id SERIAL PRIMARY KEY, 

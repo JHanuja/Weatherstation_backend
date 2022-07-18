@@ -16,9 +16,6 @@ app.use(allowCrossDomain);
 
 
 
-
-//post request
-
 app.listen(5000, () => console.log("Listening on port 5000"));
 
 
@@ -44,11 +41,6 @@ app.post("/wsdata",async(req,res) => {
 });
 
 
-/*
-<=now zu < now
-sunrise -1 weg
-
-*/
 
 app.get("/dht", async(req,res)=>{
 
@@ -66,7 +58,7 @@ app.get("/dht", async(req,res)=>{
         let soilhumidity = singleValues.rows.length > 0 ? singleValues.rows[0].soilhumidity : 'undefined';
 
         const temperatureValues = await pool.query(`Select Date(daytime) As date, Max(temperature) As maxtemp ,Avg(temperature) As avgtemp, Min(temperature) as mintemp,  Avg(humidity) As avghum, Avg(soilhumidity) As avgsoilhum 
-                                                    From (Select * From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - 8)) As Week Group By Date(daytime);
+                                                    From (Select * From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - 5)) As Week Group By Date(daytime);
 
         `);
 
