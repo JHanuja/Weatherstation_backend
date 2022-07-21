@@ -93,14 +93,14 @@ app.get("/dht", async(req,res)=>{
         console.log(temperatureValues.rows[0].maxtemp);
 
         const sun = await pool.query(   `Select Min(daytime) As sunrise,Max(daytime) As sunset From (Select * 
-            From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - interval '1 day')) As Yestary Group By brightness Having brightness > 0;
+            From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1)  - interval '1 day')) As Yestary Group By brightness Having brightness > 0;
                                     `);
 
         let sunrise = sun.rows.length > 0 ? sun.rows[0].sunrise : 'undefined';
         let sunset = sun.rows.length > 0 ? sun.rows[0].sunset : 'undefined'; 
         
         const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From (Select * 
-            From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) ::DATE - interval '7 hours')) As LastSevenHours;`);
+            From dht Where Date(daytime) > ((Select daytime From dht Order By daytime DESC Limit 1) - interval '7 hours')) As LastSevenHours;`);
 
         let airpressurehistory = [];
         let airqualityhistory = [];
