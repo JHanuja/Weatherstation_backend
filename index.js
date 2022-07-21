@@ -100,7 +100,7 @@ app.get("/dht", async(req,res)=>{
         let sunset = sun.rows.length > 0 ? sun.rows[0].sunset : 'undefined'; 
         
         const air = await pool.query(`Select daytime As time, airpressure As airp, airquality as airq From (Select * 
-            From dht Where daytime::TIME > ((Select daytime From dht Order By daytime DESC Limit 1)::TIME - interval '7 hours')) AND Date(daytime) = ((Select daytime From dht Order By daytime DESC Limit 1)::DATE)) As LastSevenHours;`);
+            From dht Where daytime::TIME > ((Select daytime From dht Order By daytime DESC Limit 1)::TIME - interval '7 hours')) AND Date(daytime) = ((Select daytime From dht Order By daytime DESC Limit 1)::DATE))) As LastSevenHours;`);
 
         let airpressurehistory = [];
         let airqualityhistory = [];
